@@ -16,7 +16,10 @@ services:
         volumes:
             - ./database:/var/lib/mysql
         environment:
-            MYSQL_ROOT_PASSWORD: root
+            MYSQL_ROOT_PASSWORD: secret
+            MYSQL_DATABASE: Homestead
+            MYSQL_USER: root
+            MYSQL_PASSWORD: secret
 
     phpmyadmin:
         image: phpmyadmin
