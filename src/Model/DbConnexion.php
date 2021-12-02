@@ -4,7 +4,6 @@
 namespace Model;
 
 use PDO;
-use Vendor\Core\PDOFactory;
 
 abstract class BaseManager
 {
