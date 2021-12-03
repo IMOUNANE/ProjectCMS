@@ -9,7 +9,7 @@ abstract class BaseManager
 {
     protected $db;
 
-    public function __construct($servername="mysql",$dbname="homestead",$username="root",$password="secret")
+    public function __construct($servername="mysql",$dbname="homestead",$username="root",$password="root")
     {
         
         try {
