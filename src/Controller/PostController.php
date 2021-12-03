@@ -21,7 +21,7 @@ class PostController extends Controller
         $manager = new PostManager();
         $index = $manager->getPosts($number);
 
-        return $this->render('Page d\'accueil', $index, 'Frontend/index');
+        return $this->render('Page d\'accueil', $index, 'FrontEnd/index');
     }
 
     /**
@@ -37,7 +37,7 @@ class PostController extends Controller
             $this->HTTPResponse->redirect('/');
         }
 
-        return $this->render($article->getTitle(), ['article' => $article], 'Frontend/show');
+        return $this->render($article->getTitle(), ['article' => $article], 'FrontEnd/show');
     }
 
     /**
@@ -122,123 +122,5 @@ class PostController extends Controller
         }
 
         $this->HTTPResponse->redirect('/article/' . $this->params['id']);
-    }
-
-    /**
-     * The REST API for the /posts/:id route
-     * @return ErrorController|void
-     */
-    public function executePostsApi()
-    {
-        $postManager = new PostManager();
-        $userManager = new UserManager();
-
-        $this->HTTPResponse->addHeader('Access-Control-Allow-Origin: http://localhost:3000');
-        $this->HTTPResponse->addHeader('Access-Control-Allow-Headers: authorization'); // ATTENTION, c'est case sensitive
-        $this->HTTPResponse->addHeader('Access-Control-Allow-Credentials: true');
-        $this->HTTPResponse->addHeader('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
-
-        $user = $userManager->checkCredentials($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']);
-        $postId = !empty($this->params['id']) ? $this->params['id'] : false;
-        $post = $postManager->postExists($postId) ? $postManager->getPostById($postId) : false;
-
-        parse_str(file_get_contents('php://input'), $_PUT);
-
-        // GET
-        if ($this->HTTPRequest->method() === 'GET') :
-            switch ($postId) {
-                case false:
-                    $this->HTTPResponse->setCacheHeader(300);
-                    isset($this->params['number']) ? $number = abs(intval($this->params['number'])) : $number = null;
-                    $this->HTTPResponse->setCacheHeader(500);
-                    $this->HTTPResponse->addHeader('Access-Control-Allow-Origin: *');
-                    return $this->renderJSON($postManager->getPosts($number, true));
-
-                case true:
-                    $post = $postManager->getPostById($postId, true);
-                    if (empty($post)) {
-                        return new ErrorController('noRouteJSON');
-                    }
-                    $this->HTTPResponse->setCacheHeader(500);
-                    $this->HTTPResponse->addHeader('Access-Control-Allow-Origin: *');
-                    return $this->renderJSON($post);
-            }
-        endif;
-
-        // POST
-        if ($this->HTTPRequest->method() === 'POST' && !$postId) :
-
-            $this->HTTPResponse->addHeader('Content-Type: application/json');
-
-            if ($user && !empty($_POST['title']) && !empty($_POST['content'])) {
-                $newPost = new Post(array(
-                    'title' => $_POST['title'],
-                    'content' => $_POST['content'],
-                    'authorId' => $user->getId()
-                ));
-                $success = $postManager->addPost($newPost, true);
-
-                if ($success) {
-                    $this->HTTPResponse->setCacheHeader(500);
-
-
-                    return $this->renderJSON($success);
-                }
-            }
-        endif;
-
-        // PUT (renvoyer toute l'entité)
-        if ($this->HTTPRequest->method() === 'PUT' && $postId && $post) :
-
-            if ($user && !empty($_PUT['title']) && !empty($_PUT['content']) && $user->havePostRights($post)) {
-                $post->setTitle($_PUT['title']);
-                $post->setContent($_PUT['content']);
-                $success = $postManager->updatePost($post, true);
-
-                if ($success) {
-                    $this->HTTPResponse->setCacheHeader(500);
-                    $this->HTTPResponse->addHeader('Access-Control-Allow-Origin: *');
-                    return $this->renderJSON($success);
-                }
-            }
-        endif;
-
-        // PATCH (renvoyer que l'élément à modifier)
-        if ($this->HTTPRequest->method() === 'PATCH' && $postId && $post) :
-
-            if ($user && (!empty($_PUT['title']) || !empty($_PUT['content'])) && $user->havePostRights($post)) {
-                $postTitle = empty($_PUT['title']) ? $post->getTitle() : $_PUT['title'];
-                $postContent = empty($_PUT['content']) ? $post->getContent() : $_PUT['content'];
-
-                $post->setTitle($postTitle);
-                $post->setContent($postContent);
-                $success = $postManager->updatePost($post, true);
-
-                if ($success) {
-                    $this->HTTPResponse->setCacheHeader(500);
-                    $this->HTTPResponse->addHeader('Access-Control-Allow-Origin: *');
-                    return $this->renderJSON($success);
-                }
-            }
-        endif;
-
-        // DELETE
-        if ($this->HTTPRequest->method() === 'DELETE' && $postId && $post && $user && $user->havePostRights($post)) :
-            $success = $postManager->deletePost($postId);
-
-            if ($success) {
-                $this->HTTPResponse->addHeader('Access-Control-Allow-Origin: *');
-                return $this->renderJSON([
-                    "status" => 1,
-                    "message" => 'Post deleted'
-                ]);
-            }
-        endif;
-
-        // If something goes wrong :
-        // $this->HTTPResponse->unauthorized([
-        //     'Authentication' => "Basic",
-        //     "Needed arguments" => ['title', 'content']
-        // ]);
     }
 }

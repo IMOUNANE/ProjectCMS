@@ -43,7 +43,7 @@
 </header>
 
 <?php if (\Vendor\App\MessageTrigger::hasMessage()) : ?>
-    <div class="alert alert-danger" role="alert">
+    <div class="alert alert-warning" role="alert">
         <?= \Vendor\App\MessageTrigger::getMessage(); ?>
     </div>
 <?php endif; ?>

@@ -133,7 +133,7 @@ class SecurityController extends Controller
         }
 
         if (SecurityController::getLoggedUser()->getId() == $this->params['id']) {
-            MessageTrigger::setMessage('Please don\'t delete yourself, you\'ll break everything !');
+            MessageTrigger::setMessage('Invalid action');
         }
 
         $this->HTTPResponse->redirect('/userlist');
