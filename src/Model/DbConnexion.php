@@ -9,7 +9,7 @@ abstract class DbConnexion
 {
     protected $db;
 
-    public function __construct( $servername="localhost",$dbname="mvc",$username="root",$password="")
+    public function __construct( $servername="localhost",$dbname="homestead",$username="root",$password="root")
     {
       
       try {
