@@ -84,4 +84,68 @@ class UserManager extends DbConnexion
         }
         return false;
     }
+       /**
+     * @return array
+     */
+    public function getAllUsers(): array
+    {
+        $query = $this->db->query('SELECT * FROM users');
+        $query->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, 'Entity\User');
+        return $query->fetchAll();
+    }
+    /**
+     * @param User $user
+     * @return User
+     */
+    public function updateUser(User $user): User
+    {
+        $update = $this->db->prepare('UPDATE users SET firstName = :firstName, lastName = :lastName, password = :password, roles = :roles WHERE email = :email');
+        $update->bindValue(':firstName', htmlspecialchars($user->getFirstName()), \PDO::PARAM_STR);
+        $update->bindValue(':lastName', htmlspecialchars($user->getLastName()), \PDO::PARAM_STR);
+        $update->bindValue(':email', htmlspecialchars($user->getEmail()), \PDO::PARAM_STR);
+        $update->bindValue(':password', htmlspecialchars($user->getPassword()), \PDO::PARAM_STR);
+        $update->bindValue(':roles', $user->getRoles(), \PDO::PARAM_STR);
+        $update->execute();
+
+        return $this->getUserByEmail($user->getEmail());
+    }
+    
+    /**
+     * Deletes an user and all of its posts and comments
+     * @param string $email
+     * @return bool
+     */
+    public function deleteUserByEmail(string $email): bool
+    {
+        $delete = $this->db->prepare('DELETE FROM users WHERE email = :email');
+        $delete->bindValue(':email', $email, \PDO::PARAM_STR);
+
+        $commentManager = new CommentManager();
+        $commentManager->deleteCommentsByAuthorId($this->getUserByEmail($email)->getId());
+
+        $postManager = new PostManager();
+        $postManager->deletePostsByAuthorId($this->getUserByEmail($email)->getId());
+
+        return $delete->execute();
+    }
+
+    /**
+     * Deletes an user and all of its posts and comments
+     * @param int $id
+     * @return bool
+     */
+    public function deleteUserById(int $id): bool
+    {
+        $delete = $this->db->prepare('DELETE FROM users WHERE id = :id');
+        $delete->bindValue(':id', $id, \PDO::PARAM_INT);
+
+        $commentManager = new CommentManager();
+        $commentManager->deleteCommentsByAuthorId($id);
+
+        $postManager = new PostManager();
+        $postManager->deletePostsByAuthorId($id);
+
+        return $delete->execute();
+    }
+
 }

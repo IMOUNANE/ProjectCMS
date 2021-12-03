@@ -4,7 +4,7 @@
 namespace Controller;
 
 
-class ErrorController extends BaseController
+class ErrorController extends Controller
 {
     /**
      * Returns 404 Error code with the 404 view

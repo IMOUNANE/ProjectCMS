@@ -10,7 +10,7 @@ abstract class BaseEntity
      * BaseEntity constructor.
      * @param array $datas
      */
-    public function __construct(array $datas = [])
+    public function __construct(array $data = [])
     {
         foreach ($data as $key => $value) {
             $method = 'set' . ucfirst($key);
