@@ -39,4 +39,27 @@ class PostManager extends DbConnexion
         $query->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Entity\Post');
         return $query->fetchAll();
     }
+    
+    /**
+     * @param int|null $number
+     * @return array
+     */
+    public function getPosts(int $number = null, bool $array = false): array
+    {
+        if ($number) {
+            $query = $this->db->prepare('SELECT * FROM posts ORDER BY id DESC LIMIT :limit');
+            $query->bindValue(':limit', $number, \PDO::PARAM_INT);
+            $query->execute();
+        } else {
+            $query = $this->db->query('SELECT * FROM posts ORDER BY id DESC');
+        }
+
+        if ($array) {
+            return $query->fetchAll(\PDO::FETCH_ASSOC);
+        }
+
+        $query->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, 'Entity\Post');
+
+        return $query->fetchAll();
+    }
 }

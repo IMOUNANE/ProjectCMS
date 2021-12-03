@@ -65,4 +65,23 @@ class UserManager extends DbConnexion
     {
         return $this->getUserByEmail($user->getEmail())->getPassword() === $user->getPassword();
     }
+
+        /**
+     * @param null $login
+     * @param null $password
+     * @return User|bool
+     */
+    public function checkCredentials($login = null, $password = null)
+    {
+        if ( !is_string($login) || !is_string($password)) {
+            return false;
+        }
+
+        $user = $this->getUserByEmail($login);
+
+        if ($user !== false && password_verify($password, $user->getPassword())) {
+            return $user;
+        }
+        return false;
+    }
 }
