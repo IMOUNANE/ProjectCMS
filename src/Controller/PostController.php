@@ -66,7 +66,7 @@ class PostController extends Controller
             $manager = new PostManager();
             $newPost = $manager->addPost($newPost);
 
-            $this->HTTPResponse->redirect('/article/' . $newPost->getId());
+            $this->HTTPResponse->redirect('/');
         }
 
         $this->HTTPResponse->redirect('/login');

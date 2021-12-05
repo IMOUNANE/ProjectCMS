@@ -10,32 +10,30 @@
 
 <body>
 
-<header class="p-3 bg-dark text-white">
+<header class="p-3 bg-white text-white">
     <div class="container">
         <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-                <img class="bi me-2" width="40" role="img" aria-label="Bootstrap" src="/logo.png" />
-            </a>
 
-            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="/" class="nav-link px-2 text-secondary">Home</a></li>
-                <li><a href="/write-article" class="nav-link px-2 text-white">Write article</a></li>
-                <li><a href="/api/posts" class="nav-link px-2 text-white" target="_blank">Post API</a></li>
-                <li><a href="/api/comments" class="nav-link px-2 text-white" target="_blank">Comments API</a></li>
-                <li><a href="/userlist" class="nav-link px-2 text-white">User List</a></li>
-            </ul>
-
-            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
-                <input type="search" class="form-control form-control-dark" placeholder="Search..." aria-label="Search">
-            </form>
+            <nav class="navbar navbar-expand-lg  bg-white">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                    <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                        <li><a href="/" class="nav-link px-2 text-primary">Home</a></li>
+                        <li><a href="/write-article" class="nav-link px-2 text-primary">Write article</a></li>
+                        <li><a href="/userlist" class="nav-link px-2 text-primary">User List</a></li>
+                    </ul>
+                </div>
+            </nav>
 
             <div class="text-end">
                 <?php if (\Controller\SecurityController::isAuthenticated()) : ?>
-                    <a type="button" href="/admin" class="btn btn-outline-light me-2">Admin</a>
-                    <a type="button" href="/logout" class="btn btn-warning">Logout</a>
+                    <a type="button" href="/admin" class="btn btn-primary me-2">Admin</a>
+                    <a type="button" href="/logout" class="btn btn-secondary">Logout</a>
                 <?php else : ?>
-                    <a type="button" href="/login" class="btn btn-outline-light me-2">Login</a>
-                    <a type="button" href="/signup" class="btn btn-warning">Sign-up</a>
+                    <a type="button" href="/login" class="btn btn-primary me-2">Login</a>
+                    <a type="button" href="/signup" class="btn btn-secondary">Sign-up</a>
                 <?php endif; ?>
             </div>
         </div>

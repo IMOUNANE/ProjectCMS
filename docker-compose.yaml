@@ -1,29 +1,29 @@
-version: '3.1'
+version: "3.1"
 
 services:
-    php:
-        build:
-            context: .
-            dockerfile: Dockerfile
-        ports:
-            - 3000:80
-        volumes:
-            - ./src:/var/www/html
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3000:80
+    volumes:
+      - ./src:/var/www/html
 
-    db:
-        image: mariadb
-        restart: always
-        volumes:
-            - ./database:/var/lib/mysql
-        environment:
-            MYSQL_ROOT_USER: root
-            MYSQL_ROOT_PASSWORD: root
-            MYSQL_DATABASE: Homestead
+  db:
+    image: mariadb
+    restart: always
+    volumes:
+      - ./database:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: Homestead
 
-    phpmyadmin:
-        image: phpmyadmin
-        restart: always
-        ports:
-            - 8080:80
-        environment:
-            - PMA_ARBITRARY=1
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8888:80
+    environment:
+      - PMA_ARBITRARY=1
